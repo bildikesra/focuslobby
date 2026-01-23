@@ -1,6 +1,10 @@
 import express from 'express';
 import cors from 'cors' ;
 import dotenv from 'dotenv';
+import prisma from './prismaClient.js';
+
+import roomRoutes from './routes/roomRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 
 // ayarları yüklüyoruz (.env dosyasını okur)
 dotenv.config();
@@ -29,6 +33,13 @@ app.get('/test', (req,res) => {
     tarih : new Date()
   });
 });
+
+// Oda rotaları:
+// Artık "/api/rooms" ile başlayan her şey roomRoutes dosyasına gidicek.
+app.use('/api/rooms', roomRoutes);
+
+// kullanıcı rotaları:
+app.use('api/users', userRoutes);
 
 // Sunucuyu başlatma
 app.listen(PORT, () => {
