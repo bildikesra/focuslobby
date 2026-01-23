@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Socket.io Test Ekranı</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; text-align: center; }
+        #status { padding: 20px; border-radius: 10px; display: inline-block; margin-top: 20px; font-weight: bold; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .waiting { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+    </style>
+</head>
+<body>
+
+    <h1>📡 FocusLobby Bağlantı Testi</h1>
+    <div id="status" class="waiting">Bağlanılıyor...</div>
+    <p id="socketId">ID bekleniyor...</p>
+
+    <div>
+        <input type="text" id="roomInput" placeholder="Oda kodu" style="padding: 10px;"/>
+        <button onclick="joinRoom()" style="padding: 10px 20px; cursor: pointer;"> Odaya Gir </button>
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    
+    <script>
+        const statusDiv = document.getElementById('status');
+        const idPara = document.getElementById('socketId');
+
+        // Sunucuya bağlan
+        const socket = io("http://localhost:3000");
+
+        // Bağlantı Başarılı Olduğunda
+        socket.on("connect", () => {
+            statusDiv.textContent = "✅ BAŞARILI: Sunucuya Bağlanıldı!";
+            statusDiv.className = "success";
+            idPara.textContent = "Benim Socket ID'm: " + socket.id;
+            console.log("Bağlandım!", socket.id);
+        });
+
+        // Bağlantı Koptuğunda
+        socket.on("disconnect", () => {
+            statusDiv.textContent = "❌ HATA: Bağlantı Koptu";
+            statusDiv.className = "error";
+        });
+
+        // Bağlantı Hatası Olduğunda
+        socket.on("connect_error", (err) => {
+            statusDiv.textContent = "⚠️ Sunucuya Ulaşılamıyor (" + err.message + ")";
+            statusDiv.className = "error";
+            console.error("Bağlantı hatası:", err);
+        });
+
+        function joinRoom(){
+            const roomCode = document.getElementById('roomInput').value;
+
+            if(roomCode) {
+                socket.emit('join_room', roomCode);
+                console.log("Odaya girme isteği gönderildi:" , roomCode);
+                alert(roomCode + " odasına giriş isteği atıldı!");
+            } else {
+                alert("Lütfen bir oda kodu yaz.");
+            }
+        }
+    </script>
+</body>
+</html>
