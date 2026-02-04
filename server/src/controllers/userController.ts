@@ -4,16 +4,12 @@ import { error } from "console";
 
 // Kayıt olma
 export const registerUser = async (req: Request, res: Response) => {
+    console.log("Gelen istek body: ", req.body);
     try {
-        const { email, password, fullName } = req.body;
-
-        if(!email || !password) {
-            res.status(400).json({ error: "Email ve şifre zorunludur. "});
-            return;
-        }
+        const { username} = req.body;
 
         const newUser = await prisma.user.create({
-            data: { email, password, fullName }
+            data: { username }
         });
 
         res.status(201).json({

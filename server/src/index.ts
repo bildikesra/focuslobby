@@ -58,7 +58,7 @@ app.get('/', (req,res) => {
 app.use('/api/rooms', roomRoutes);
 
 // kullanıcı rotaları:
-app.use('api/users', userRoutes);
+app.use('/api/users', userRoutes);
 
 // Sunucuyu başlatma 
 // Artık "app.listen" yerine "httpServer.listen" kullanıyoruz

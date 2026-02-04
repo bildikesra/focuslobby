@@ -3,12 +3,25 @@ import { View, Text, KeyboardAvoidingView, Platform, ScrollView } from 'react-na
 import { Button } from '../src/components/Button';
 import { Input } from '../src/components/Input';
 import { Card } from '../src/components/Card';
+import { loginUser } from '../src/services/api';
+import { Alert } from 'react-native';
 
 export default function WelcomeScreen() {
   const [username, setUsername] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
-    alert(`Hoş geldin, ${username}!`); 
+  const handleLogin = async () => {
+    if(!username.trim()) return;
+    setLoading(true);
+
+    try {
+      const data = await loginUser(username);
+      Alert.alert("Başarılı", `Hoş geldin ${data.username}!`);
+    } catch (error) {
+      Alert.alert("Hata", "Sunucuya bağlanılamadı.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -37,7 +50,7 @@ export default function WelcomeScreen() {
              <View className='space-y-4'>
               <Input 
                 label="Kullanıcı Adın"
-                placeholder="Örn: kodlayancocuk"
+                placeholder="Örn: codesocum"
                 value={username}
                 onChangeText={setUsername}
                 autoCapitalize="none"
